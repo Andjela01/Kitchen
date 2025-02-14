@@ -41,3 +41,30 @@ function recipe_validation($recipe, $conn)
             return false;
       }
 }
+
+function username_validation($username, $conn)
+{
+      $q = "SELECT * FROM `taster` WHERE `username` LIKE '$username'";
+      $res = $conn->query($q);
+
+      if (empty($username)) {
+            return "Username field cannot be empty.";
+      } else if ($res->num_rows > 0) {
+            return "This username already exists.";
+      } else if (strlen($username) < 3) {
+            return "Username must be at least 3 characters long.";
+      } else {
+            return false;
+      }
+}
+
+function password_validation($password)
+{
+      if (empty($password)) {
+            return "Password field cannot be empty.";
+      } else if (str_replace(" ", "", $password) != $password) {
+            return "Password must not contain spaces.";
+      } else {
+            return false;
+      }
+}

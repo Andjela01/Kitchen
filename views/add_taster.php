@@ -5,68 +5,70 @@ require_once "../includes/validation.php";
 $q = "SELECT * FROM `allergens`";
 $res = $conn->query($q);
 
-$recipe_nameErr = $recipeErr = "";
-$recipe_name = $recipe = "";
+$usernameErr = $passwordErr = "";
+$username = $password = "";
 $validation = true;
 
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $recipe_name = $_POST['recipe_name'];
-      $recipe = $_POST['recipe'];
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+      $username = $_POST['username'];
+      $password = $_POST['password'];
       $allergens = isset($_POST['allergens']) ? $_POST['allergens'] : [];
 }
 
-if (recipe_name_validation($recipe_name, $conn)) {
-      $recipe_nameErr = recipe_name_validation($recipe_name, $conn);
+if (username_validation($username, $conn)) {
+      $usernameErr = username_validation($username, $conn);
       $validation = false;
 }
 
-if (recipe_validation($recipe, $conn)) {
-      $recipeErr = recipe_validation($recipe, $conn);
+if (password_validation($password)) {
+      $passwordErr = password_validation($password);
       $validation = false;
 }
 
 if ($validation) {
-      $q = "INSERT INTO `recipe`(`name`, `text`)
-            VALUES ('$recipe_name', '$recipe')";
+      $pass_new = md5($password);
+      $q = "INSERT INTO `taster`(`username`, `password`)
+            VALUES ('$username', '$pass_new')";
       if ($conn->query($q)) {
-            $recipe_id = $conn->insert_id;
+            $taster_id = $conn->insert_id;
 
             if (!empty($allergens)) {
                   foreach ($allergens as $allergen_id) {
-                        $q = "INSERT INTO `recipe_has_allergens`(`recipe_id`, `allergen_id`)
-                              VALUES ('$recipe_id', $allergen_id)";
+                        $q = "INSERT INTO `allergic`(`taster_id`, `allergen_id`)
+                              VALUES ('$taster_id', '$allergen_id')";
                         $conn->query($q);
                   }
             }
-            echo "Recipe successfully added.";
+            echo "Taster successfully added.";
       } else {
             echo "Error" . $conn->error;
+
       }
 }
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Add recipes</title>
+      <title>Add taster</title>
 </head>
 
 <body>
       <form action="" method="POST">
             <p>
-                  <label for="recipe_name">Recipe name:</label>
-                  <input type="text" name="recipe_name" id="recipe_name">
-                  <span><?php echo $recipe_nameErr; ?></span>
+                  <label for="username">Username:</label>
+                  <input type="text" name="username" id="username">
+                  <span><?php echo $usernameErr; ?></span>
             </p>
             <p>
-                  <label for="recipe">Recipe</label>
-                  <textarea name="recipe" id="recipe"></textarea>
-                  <span><?php echo $recipeErr; ?></span>
+                  <label for="password">Password:</label>
+                  <input type="password" name="password" id="password">
+                  <span><?php echo $passwordErr; ?></span>
             </p>
             <p>
                   <label for="allergens">Allergens:</label>
