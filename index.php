@@ -9,10 +9,10 @@
 
 <body>
       <ul>
-            <li><a href="">New allergen</a></li>
-            <li><a href="">New recipe</a></li>
-            <li><a href="">New taster</a></li>
-            <li><a href="">New login</a></li>
+            <li><a href="views/add_allergen.php">Add allergen</a></li>
+            <li><a href="views/add_recipes.php">Add recipe</a></li>
+            <li><a href="views/add_taster.php">Add taster</a></li>
+            <li><a href="views/login.php">Login</a></li>
       </ul>
 </body>
 
